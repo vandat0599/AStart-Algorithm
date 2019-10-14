@@ -13,14 +13,14 @@ class Point():
 
     def getAllNeighborPoint(self, w, h):
         res = []
-        if y-1>0:
-            res.append(Point(x,y-1))
-        if y+1<h:
-            res.append(Point(x,y+1))
-        if x-1>0:
-            res.append(Point(x-1,y))
-        if x+1<w:
-            res.append(Point(x+1,y))
+        if self.y-1>0:
+            res.append(Point(self.x,self.y-1))
+        if self.y+1<h:
+            res.append(Point(self.x,self.y+1))
+        if self.x-1>0:
+            res.append(Point(self.x-1,self.y))
+        if self.x+1<w:
+            res.append(Point(self.x+1,self.y))
         return res
 
 class Node():
@@ -45,6 +45,10 @@ class Node():
             res.append(node)
         return res
 
+class matrix():
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
 
 def aStar(matrix, start, end):
     nodeStart = Node(None,start)
@@ -56,18 +60,30 @@ def aStar(matrix, start, end):
     currentNode = nodeStart
     pathResultNode = []
     closeNodes = []
-    while openNodes is not None:
+    while len(openNodes)>0:
         #find the node in openNode having the lowest fScore[] value
         for node in openNodes:
-            if node.f < currentNode.f:
+            if node.f <= currentNode.f:
                 currentNode = node
         pathResultNode.append(currentNode)
 
         #check goal
         if currentNode.position == end:
+            for node in pathResultNode:
+                print("({},{})".format(node.position.x,node.position.y))
             return pathResultNode
         
         openNodes.remove(currentNode)
         closeNodes.append(currentNode)
 
+        currentNeighbor = currentNode.getAllNodeNeighbor(matrix.w,matrix.h,end)
+        for node in currentNeighbor:
+            if node in closeNodes:
+                continue
+            if node not in openNodes:
+                openNodes.append(node)
+    return []
+
+aStar(matrix(100,100),Point(0,0),Point(5,5))
+            
 
