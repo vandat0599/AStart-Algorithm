@@ -21,6 +21,14 @@ class Point():
             res.append(Point(self.x-1,self.y))
         if self.x+1<w:
             res.append(Point(self.x+1,self.y))
+        if self.x-1>0 and self.y-1>0:
+            res.append(Point(self.x-1,self.y-1))
+        if self.x+1<w and self.y+1<h:
+            res.append(Point(self.x+1,self.y+1))
+        if self.x-1>0 and self.y+1<h:
+            res.append(Point(self.x-1,self.y+1))
+        if self.x+1<w and self.y-1>0:
+            res.append(Point(self.x+1,self.y-1))
         return res
 
 class Node():
@@ -39,6 +47,8 @@ class Node():
         neightborPoint = self.position.getAllNeighborPoint(w,h)
         for point in neightborPoint:
             node = Node(self.position,point)
+            if abs(node.position.x - point.x) == 1 and abs(node.position.y-point.y)==1:
+                node.g = self.g + 1.5
             node.g = self.g + 1
             node.h = point.manhattanDistance(end)
             node.f = node.g + node.h
@@ -80,10 +90,14 @@ def aStar(matrix, start, end):
         for node in currentNeighbor:
             if node in closeNodes:
                 continue
+            
+            #add conditions here: check in poly and avoid it
             if node not in openNodes:
+                print("-- ({},{})".format(node.position.x,node.position.y))
                 openNodes.append(node)
+    print("no no no no no no")
     return []
 
-aStar(matrix(100,100),Point(0,0),Point(5,5))
+aStar(matrix(100,100),Point(0,0),Point(50,9))
             
 
