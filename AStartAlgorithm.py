@@ -14,15 +14,10 @@ def drawFirstWin(matrix):
     for x in range(0, matrix.h):
         Line(Point(x, 0), Point(x, matrix.h)).draw(win)
 
-def drawPoint( x, y):
+def drawPoint( x, y, color):
     square = Rectangle(Point(x,y), Point(x+1,y+1))
     square.draw(win)
-    square.setFill('red')
-
-def drawPointResult(x, y):
-    square = Rectangle(Point(x,y), Point(x+1,y+1))
-    square.draw(win)
-    square.setFill('blue')
+    square.setFill(color)
 
 class MyPoint():
     def __init__(self, x=0, y=0):
@@ -86,8 +81,8 @@ class matrix():
 
 def aStar(matrix, start, end):
     drawFirstWin(matrix)
-    drawPoint(start.x,start.y)
-    drawPoint(end.x,end.y)
+    drawPoint(start.x,start.y,'red')
+    drawPoint(end.x,end.y,'red')
 
     nodeStart = Node(None,start)
     nodeEnd = Node(None, end)
@@ -110,7 +105,7 @@ def aStar(matrix, start, end):
             for node in pathResultNode:
                 # print("({},{})".format(node.position.x,node.position.y))
                 for node in pathResultNode:
-                    drawPointResult(node.position.x,node.position.y)
+                    drawPoint(node.position.x,node.position.y,'lime')
             return pathResultNode
         
         openNodes.remove(currentNode)
@@ -125,7 +120,7 @@ def aStar(matrix, start, end):
             if node not in openNodes:
                 print("-- ({},{})".format(node.position.x,node.position.y))
                 openNodes.append(node)
-                drawPoint(node.position.x,node.position.y)
+                drawPoint(node.position.x,node.position.y,'royalblue')
     print("no no no no no no")
     return []
 
