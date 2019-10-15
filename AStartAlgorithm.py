@@ -74,16 +74,12 @@ class Node():
             res.append(node)
         return res
 
-class matrix():
+class Matrix():
     def __init__(self, w, h):
         self.w = w
         self.h = h
 
 def aStar(matrix, start, end):
-    drawFirstWin(matrix)
-    drawPoint(start.x,start.y,'red')
-    drawPoint(end.x,end.y,'red')
-
     nodeStart = Node(None,start)
     nodeEnd = Node(None, end)
     nodeStart.g = 0
@@ -102,10 +98,6 @@ def aStar(matrix, start, end):
 
         #check goal
         if currentNode.position == end:
-            for node in pathResultNode:
-                # print("({},{})".format(node.position.x,node.position.y))
-                for node in pathResultNode:
-                    drawPoint(node.position.x,node.position.y,'lime')
             return pathResultNode
         
         openNodes.remove(currentNode)
@@ -124,10 +116,34 @@ def aStar(matrix, start, end):
     print("no no no no no no")
     return []
 
-aStar(matrix(100,100),MyPoint(10,5),MyPoint(96,79))
+def pathWithPickupPoint(matrix,start,end,pickupPoint):
+    points = []
+    points.append(start)
+    for pickup in pickupPoint:
+        points.append(MyPoint(pickup[0],pickup[1]))
+    points.append(end)
+    result = []
+    for index in range(0,len(points)-1):
+        result += aStar(matrix,points[index],points[index+1])
+    return result
 
-win.getMouse()
-win.close()
-# drawBoard(win)
+def main():
+    pointStart = MyPoint(1,5)
+    pointEnd = MyPoint(96,79)
+    pickupPoint = [(15,20),(20,30),(25,60),(35,50),(45,79)]
+    matrix = Matrix(100,100)
+    drawFirstWin(matrix)
+    for point in pickupPoint:
+        drawPoint(point[0],point[1],'red')
+    drawPoint(pointStart.x,pointStart.y,'red')
+    drawPoint(pointEnd.x,pointEnd.y,'red')
+
+    resultPath = pathWithPickupPoint(matrix,pointStart, pointEnd,pickupPoint)
+    for node in resultPath:
+            drawPoint(node.position.x,node.position.y,'lime')
+    win.getMouse()
+    win.close()
+
+main()
             
 
