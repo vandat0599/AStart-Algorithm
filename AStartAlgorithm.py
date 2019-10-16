@@ -53,7 +53,6 @@ class MyPoint():
             res.append(MyPoint(self.x+1,self.y-1))
         return res
 
-
 class Node():
     def __init__(self, parent=None, position=None):
         self.parent = parent
@@ -107,41 +106,14 @@ class MyPoly():
         # print("minx: {} maxx: {}".format(minY,maxY))
         return False
 
-def is_point_in_path(x, y, poly):
-    """
-    x, y -- x and y coordinates of point
-    poly -- a list of tuples [(x, y), (x, y), ...]
-    """
-    num = len(poly)
-    i = 0
-    j = num - 1
-    c = False
-    for i in range(num):
-        if ((poly[i][1] > y) != (poly[j][1] > y)) and \
-                (x < poly[i][0] + (poly[j][0] - poly[i][0]) * (y - poly[i][1]) /
-                                  (poly[j][1] - poly[i][1])):
-            c = not c
-        j = i
-    return c
-
-def isPointInPolyInMatrix(matrix, point):
-    for m in matrix.getAllPolyInside():
-        if(is_point_in_path(point.x,point.y,m.getDrawPoints())):
-            return True
-    return False
-
 class Matrix():
     def __init__(self, w, h):
         self.w = w
         self.h = h
-        self.polyDrawedPositions = set()
         self.polyInside = []
 
     def addPolyInside(self,poly):
         self.polyInside.append(poly)
-
-    def addAllPolyEdgePositions(self,p):
-        self.polyDrawedPositions = p
     
     def getAllPolyInside(self):
         return self.polyInside
@@ -153,12 +125,10 @@ def aStar(matrix, start, end):
     nodeStart.h = nodeStart.position.manhattanDistance(nodeEnd.position)
     nodeStart.f = nodeStart.g + nodeStart.h
     openNodes = [nodeStart]
-    markedPosition = [nodeStart.position.x,nodeStart.position.y]
     currentNode = nodeStart
     pathResultNode = []
     closeNodes = []
     while len(openNodes)>0:
-        print(markedPosition)
         #find the node in openNode having the lowest fScore[] value
         for node in openNodes:
             # drawPoint(node.position.x,node.position.y,'cyan')
@@ -167,26 +137,22 @@ def aStar(matrix, start, end):
         pathResultNode.append(currentNode)
 
         #check goal
-        print("loop {}".format((currentNode.position.x,currentNode.position.y)))
         if currentNode.position == end:
             return pathResultNode
-        if(currentNode in openNodes):
-            openNodes.remove(currentNode)
+        
+        openNodes.remove(currentNode)
         closeNodes.append(currentNode)
+
         currentNeighbor = currentNode.getAllNodeNeighbor(matrix.w,matrix.h,end)
         for node in currentNeighbor:
             if node in closeNodes:
                 continue
+            
             #add conditions here: check in poly and avoid it
             if node not in openNodes:
-                if not(isPointInPolyInMatrix(matrix,node.position)) and \
-                (node.position.x,node.position.y) not in matrix.polyDrawedPositions and \
-                ((node.position.x,node.position.y) not in markedPosition):
-                    print("-- ({},{})".format(node.position.x,node.position.y))
-                    # print("len: {}".format(len(matrix.polyDrawedPositions)))
-                    openNodes.append(node)
-                    markedPosition.append((node.position.x,node.position.y))
-                    drawPoint(node.position.x,node.position.y,'royalblue')
+                print("-- ({},{})".format(node.position.x,node.position.y))
+                openNodes.append(node)
+                drawPoint(node.position.x,node.position.y,'royalblue')
     print("no no no no no no")
     return []
 
@@ -212,7 +178,6 @@ def getXInLine(p1,p2,y):
     return int(((p2.y-p1.y)*p1.x+(p2.x-p1.x)*y-(p2.x-p1.x)*p1.y)/(p2.y-p1.y))
 
 def drawPoly(poly):
-    pSets = set()
     pointPoly = poly.getDrawPoints()
     for index in range(0,len(pointPoly)-1):
         minX = pointPoly[index][0] if pointPoly[index][0] < pointPoly[index+1][0] else pointPoly[index+1][0]
@@ -221,7 +186,6 @@ def drawPoly(poly):
             y = getYInLine(MyPoint(pointPoly[index][0],pointPoly[index][1]),MyPoint(pointPoly[index+1][0],pointPoly[index+1][1]),i)
             if y!=-1:
                 drawPoint(i,y,'khaki')
-                pSets.add((i,y))
 
     for index in range(0,len(pointPoly)-1):
         minY = pointPoly[index][1] if pointPoly[index][1] < pointPoly[index+1][1] else pointPoly[index+1][1]
@@ -230,10 +194,8 @@ def drawPoly(poly):
             x = getXInLine(MyPoint(pointPoly[index][0],pointPoly[index][1]),MyPoint(pointPoly[index+1][0],pointPoly[index+1][1]),i)
             if x!=-1:
                 drawPoint(x,i,'khaki')
-                pSets.add((x,i))
     for point in pointPoly:
         drawPoint(point[0],point[1],'darkkhaki')
-    return pSets
 
 def main():
     pointStart = MyPoint(2,2)
@@ -242,29 +204,18 @@ def main():
     pickupPoint = []
     matrix = Matrix(22,22)
     drawFirstWin(matrix)
-    positionEdgeDrawed = set()
 
     # draw poly
     poly1 = MyPoly([(8,12),(8,17),(13,12)])
     poly2 = MyPoly([(4,4),(5,9),(8,10),(9,5)])
     poly3 = MyPoly([(11,1),(11,6),(14,6),(14,1)])
-    poly4 = MyPoly([(15,13),(18,13),(18,9),(15,9)])
-    poly5 = MyPoly([(10,10),(12,10),(12,8),(10,8)])
-    poly6 = MyPoly([(15,21),(17,21),(17,14),(15,14)])
     poly1.checkPointInSide(MyPoint())
-    p1 = drawPoly(poly1)
-    p2 = drawPoly(poly2)
-    p3 = drawPoly(poly3)
-    p4 = drawPoly(poly4)
-    p5 = drawPoly(poly5)
-    p6 = drawPoly(poly6)
-    positionEdgeDrawed = p1.union(p2).union(p3).union(p4).union(p5).union(p6)
-    print(len(positionEdgeDrawed))
+    drawPoly(poly1)
+    drawPoly(poly2)
+    drawPoly(poly3)
     matrix.addPolyInside(poly1)
     matrix.addPolyInside(poly2)
     matrix.addPolyInside(poly3)
-    matrix.addAllPolyEdgePositions(positionEdgeDrawed)
-    print(positionEdgeDrawed)
 
     for point in pickupPoint:
         drawPoint(point[0],point[1],'red')
@@ -280,7 +231,6 @@ def main():
     drawPoint(pointEnd.x,pointEnd.y,'red')
     win.getMouse()
     win.close()
-    
 
 main()
             
