@@ -69,7 +69,7 @@ class Node():
         res = []
         neightborPoint = self.position.getAllNeighborPoint(w,h)
         for point in neightborPoint:
-            node = Node(self.position,point)
+            node = Node(self,point)
             if abs(node.position.x - point.x) == 1 and abs(node.position.y-point.y)==1:
                 node.g = self.g + 1.5
             node.g = self.g + 1
@@ -146,6 +146,13 @@ class Matrix():
     def getAllPolyInside(self):
         return self.polyInside
 
+def reconstructPath(current):
+    resultPath = [current]
+    while current.parent:
+        current = current.parent
+        resultPath.insert(0,current)
+    return resultPath
+
 def aStar(matrix, start, end):
     nodeStart = Node(None,start)
     nodeEnd = Node(None, end)
@@ -157,7 +164,7 @@ def aStar(matrix, start, end):
     pathResultNode = []
     closeNodes = []
     while openNodes:
-        print("len: {}".format(len(openNodes)))
+        # print("len: {}".format(len(openNodes)))
         #find the node in openNode having the lowest fScore[] value
         nodeTmp = Node()
         nodeTmp.f = math.inf
@@ -169,9 +176,9 @@ def aStar(matrix, start, end):
         pathResultNode.append(currentNode)
 
         #check goal
-        print("loop {}".format((currentNode.position.x,currentNode.position.y)))
+        # print("loop {}".format((currentNode.position.x,currentNode.position.y)))
         if currentNode.position == end:
-            return pathResultNode
+            return reconstructPath(currentNode)
         if(currentNode in openNodes):
             openNodes.remove(currentNode)
         # openNodes.remove(currentNode)
@@ -179,7 +186,7 @@ def aStar(matrix, start, end):
         currentNeighbor = currentNode.getAllNodeNeighbor(matrix.w,matrix.h,end)
         for node in currentNeighbor:
             if node in closeNodes:
-                print("in closeNodes {}".format((currentNode.position.x,currentNode.position.y)))
+                # print("in closeNodes {}".format((currentNode.position.x,currentNode.position.y)))
                 continue
             #add conditions here: check in poly and avoid it
             if node not in openNodes:
@@ -245,7 +252,7 @@ def drawPoly(poly):
 def main():
 
     #read file
-    with open("sample1.txt") as f:
+    with open("sample2.txt") as f:
         lineList = f.readlines()
     for i in range(0,len(lineList)):
         lineList[i] = lineList[i].rstrip()
@@ -264,7 +271,7 @@ def main():
     matrix = Matrix(matrixWidth,matrixHeight)
     drawFirstWin(matrix)
     positionEdgeDrawed = set()
-    print(polyArr)
+    # print(polyArr)
     for poly in polyArr:
         matrix.addPolyInside(poly)
         positionEdgeDrawed = positionEdgeDrawed.union(drawPoly(poly))
