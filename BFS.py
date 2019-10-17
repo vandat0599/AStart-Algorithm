@@ -1,5 +1,5 @@
 from graphics import*
-
+import time
 winWidth = 700
 winHeight = 700
 win = GraphWin("DDDPRO", winWidth, winHeight)
@@ -122,9 +122,14 @@ def main():
     start = MyPoint(1, 1)
     end = MyPoint(10, 20)
     drawFirstWin(matrix)
+    drawPoint(start.x, start.y, 'red')
+    drawPoint(end.x, end.y, 'red')
     Bfs = bfs(matrix, start, end)
     for i in Bfs:
         drawPoint(i.position.x, i.position.y, 'blue')
+        time.sleep(0.2)
+    drawPoint(start.x, start.y, 'red')
+    drawPoint(end.x, end.y, 'red')
     win.getMouse()
     win.close()
 
