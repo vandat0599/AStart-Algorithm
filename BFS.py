@@ -33,19 +33,19 @@ class MyPoint():
 
     def getAllNeighborPoint(self, w, h):
         res = []
-        if self.y-1 > 0:
+        if self.y-1 >= 0:
             res.append(MyPoint(self.x, self.y-1))
         if self.y+1 < h:
             res.append(MyPoint(self.x, self.y+1))
-        if self.x-1 > 0:
+        if self.x-1 >= 0:
             res.append(MyPoint(self.x-1, self.y))
         if self.x+1 < w:
             res.append(MyPoint(self.x+1, self.y))
-        if self.x-1 > 0 and self.y-1 > 0:
+        if self.x-1 >= 0 and self.y-1 > 0:
             res.append(MyPoint(self.x-1, self.y-1))
         if self.x+1 < w and self.y+1 < h:
             res.append(MyPoint(self.x+1, self.y+1))
-        if self.x-1 > 0 and self.y+1 < h:
+        if self.x-1 >= 0 and self.y+1 < h:
             res.append(MyPoint(self.x-1, self.y+1))
         if self.x+1 < w and self.y-1 > 0:
             res.append(MyPoint(self.x+1, self.y-1))
