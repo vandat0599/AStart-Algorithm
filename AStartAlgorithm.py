@@ -245,7 +245,7 @@ def drawPoly(poly):
 def main():
 
     #read file
-    with open("sample1.txt") as f:
+    with open("input.txt") as f:
         lineList = f.readlines()
     for i in range(0,len(lineList)):
         lineList[i] = lineList[i].rstrip()
