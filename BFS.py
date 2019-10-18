@@ -126,15 +126,14 @@ def reconstructPath(current):
         resultPath.insert(0,current)
     return resultPath
 
-def getCostPath(current):
+def getCostPath(path):
     cost = 0
-    while current.parent:
-        if abs(current.position.x - current.parent.position.x) == 1 and \
-            abs(current.position.y-current.parent.position.y)==1:
+    for i in range(0,len(path)-1):
+        if abs(path[i].position.x - path[i+1].position.x) == 1 and \
+            abs(path[i].position.y-path[i+1].position.y)==1:
             cost = cost + 1.5
         else:
             cost = cost + 1
-        current = current.parent
     return cost
 
 def pathWithPickupPoint(matrix,start,end,pickupPoint):
@@ -146,6 +145,8 @@ def pathWithPickupPoint(matrix,start,end,pickupPoint):
     result = []
     for index in range(0,len(points)-1):
         result += bfs(matrix,points[index],points[index+1])
+    print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in result]))
+    print("-----Cost: {}".format(getCostPath(result)))
     return result
 
 def getYInLine(p1,p2,x):
@@ -204,10 +205,7 @@ def bfs(matrix, start, end):
         # Checks if we got to the end
         #vertex = Node()
         if node_end == vertex:
-            resultPath = reconstructPath(vertex)
-            print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in resultPath]))
-            print("-----Cost: {}".format(getCostPath(vertex)))
-            return resultPath
+            return reconstructPath(vertex)
         # We check if the current node is already in the visited nodes set in order not to recheck it
         elif vertex not in visited:
 

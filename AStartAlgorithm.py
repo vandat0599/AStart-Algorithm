@@ -155,15 +155,14 @@ def reconstructPath(current):
         resultPath.insert(0,current)
     return resultPath
 
-def getCostPath(current):
+def getCostPath(path):
     cost = 0
-    while current.parent:
-        if abs(current.position.x - current.parent.position.x) == 1 and \
-            abs(current.position.y-current.parent.position.y)==1:
+    for i in range(0,len(path)-1):
+        if abs(path[i].position.x - path[i+1].position.x) == 1 and \
+            abs(path[i].position.y-path[i+1].position.y)==1:
             cost = cost + 1.5
         else:
             cost = cost + 1
-        current = current.parent
     return cost
 
 def aStar(matrix, start, end):
@@ -191,11 +190,7 @@ def aStar(matrix, start, end):
         #check goal
         # print("loop {}".format((currentNode.position.x,currentNode.position.y)))
         if currentNode.position == end:
-            resultPath = reconstructPath(currentNode)
-            print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in resultPath]))
-            print("-----Cost: {}".format(getCostPath(currentNode)))
-            cost = 0
-            return resultPath
+            return reconstructPath(currentNode)
         if(currentNode in openNodes):
             openNodes.remove(currentNode)
         # openNodes.remove(currentNode)
@@ -225,6 +220,8 @@ def pathWithPickupPoint(matrix,start,end,pickupPoint):
     result = []
     for index in range(0,len(points)-1):
         result += aStar(matrix,points[index],points[index+1])
+    print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in result]))
+    print("-----Cost: {}".format(getCostPath(result)))
     return result
 
 def getYInLine(p1,p2,x):
