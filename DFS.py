@@ -127,6 +127,17 @@ def reconstructPath(current):
         resultPath.insert(0,current)
     return resultPath
 
+def getCostPath(current):
+    cost = 0
+    while current.parent:
+        if abs(current.position.x - current.parent.position.x) == 1 and \
+            abs(current.position.y-current.parent.position.y)==1:
+            cost = cost + 1.5
+        else:
+            cost = cost + 1
+        current = current.parent
+    return cost
+
 def pathWithPickupPoint(matrix,start,end,pickupPoint):
     points = []
     points.append(start)
@@ -192,7 +203,10 @@ def dfs_paths(matrix, start, end):
         stack.remove(stack[n])
         if vertex not in visited:
             if vertex == endNode:
-                return reconstructPath(vertex)
+                resultPath = reconstructPath(vertex)
+                print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in resultPath]))
+                print("-----Cost: {}".format(getCostPath(vertex)))
+                return resultPath
             visited.append(vertex)
             for neighbor in vertex.getAllNodeNeighbor(matrix.w,matrix.h):
                 if neighbor not in stack:

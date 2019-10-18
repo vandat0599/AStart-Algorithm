@@ -73,7 +73,8 @@ class Node():
             node = Node(self,point)
             if abs(node.position.x - point.x) == 1 and abs(node.position.y-point.y)==1:
                 node.g = self.g + 1.5
-            node.g = self.g + 1
+            else:
+                node.g = self.g + 1
             node.h = point.manhattanDistance(end)
             node.f = node.g + node.h
             res.append(node)
@@ -154,6 +155,17 @@ def reconstructPath(current):
         resultPath.insert(0,current)
     return resultPath
 
+def getCostPath(current):
+    cost = 0
+    while current.parent:
+        if abs(current.position.x - current.parent.position.x) == 1 and \
+            abs(current.position.y-current.parent.position.y)==1:
+            cost = cost + 1.5
+        else:
+            cost = cost + 1
+        current = current.parent
+    return cost
+
 def aStar(matrix, start, end):
     nodeStart = Node(None,start)
     nodeEnd = Node(None, end)
@@ -179,7 +191,11 @@ def aStar(matrix, start, end):
         #check goal
         # print("loop {}".format((currentNode.position.x,currentNode.position.y)))
         if currentNode.position == end:
-            return reconstructPath(currentNode)
+            resultPath = reconstructPath(currentNode)
+            print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in resultPath]))
+            print("-----Cost: {}".format(getCostPath(currentNode)))
+            cost = 0
+            return resultPath
         if(currentNode in openNodes):
             openNodes.remove(currentNode)
         # openNodes.remove(currentNode)
