@@ -1,6 +1,7 @@
 import queue
 from graphics import *
 import math
+import random
 
 winWidth = 700
 winHeight = 700
@@ -199,7 +200,10 @@ def dfs_paths(matrix, start, end):
                     (neighbor.position.x,neighbor.position.y) not in matrix.polyDrawedPositions:
                         print("-- ({},{})".format(neighbor.position.x,neighbor.position.y))
                         stack.append(neighbor)
-                        drawPoint(neighbor.position.x,neighbor.position.y,'royalblue')
+                        colors = ['royalblue','royalblue1','royalblue2','royalblue3','royalblue4']
+                        drawPoint(neighbor.position.x,neighbor.position.y,colors[random.randint(0, 5)-1])
+    print("--------------------no no no no no no path not found-------------------------")
+    return []
 
 def main():
 
