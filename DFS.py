@@ -1,3 +1,4 @@
+import queue
 from graphics import *
 import math
 import random
@@ -134,7 +135,7 @@ def pathWithPickupPoint(matrix,start,end,pickupPoint):
     points.append(end)
     result = []
     for index in range(0,len(points)-1):
-        result += bfs(matrix,points[index],points[index+1])
+        result += dfs_paths(matrix,points[index],points[index+1])
     return result
 
 def getYInLine(p1,p2,x):
@@ -177,47 +178,31 @@ def drawPoly(poly):
         drawPoint(point[0],point[1],'khaki4')
     return pSets
 
-def bfs(matrix, start, end):
-    node_start = Node(None, start)
-    node_end = Node(None, end)
-    queue = [node_start]
-    visited = list()
-    while queue:
-        # Gets the first path in the queue
-        path = queue.pop(0)
-        if type(path) == Node:
-            # Gets the last node in the path
-            vertex = path
-        else:
-            vertex = path[-1]
-        # Checks if we got to the end
-        #vertex = Node()
-        if node_end == vertex:
-            return reconstructPath(vertex)
-        # We check if the current node is already in the visited nodes set in order not to recheck it
-        elif vertex not in visited:
-
-            if not(isPointInPolyInMatrix(matrix,vertex.position)) and \
-                    (vertex.position.x,vertex.position.y) not in matrix.polyDrawedPositions:
-                        print("-- ({},{})".format(vertex.position.x,vertex.position.y))
-                        # drawPoint(neighbor.position.x,neighbor.position.y,'royalblue')
-                        # enumerate all adjacent nodes, construct a new path and push it into the queue
-                        for current_neighbour in vertex.getAllNodeNeighbor(matrix.w, matrix.h):
-                            if type(path) == Node:
-                                new_path = list()
-                                new_path.append(path)
-                                new_path.append(current_neighbour)
-                                queue.append(new_path)
-                            else:
-                                new_path = list(path)
-                                new_path.append(current_neighbour)
-                                queue.append(new_path)
-
-                        # Mark the vertex as visited
-                        visited.append(vertex)
+ 
+def dfs_paths(matrix, start, end):
+    startNode = Node(None, start)
+    endNode = Node(None, end)
+    stack = [startNode]
+    visited = []
+    path = []
+    while stack:
+        n = len(stack)-1
+        vertex = stack[n]
+        path.append(stack[n])
+        stack.remove(stack[n])
+        if vertex not in visited:
+            if vertex == endNode:
+                return reconstructPath(vertex)
+            visited.append(vertex)
+            for neighbor in vertex.getAllNodeNeighbor(matrix.w,matrix.h):
+                if neighbor not in stack:
+                     if not(isPointInPolyInMatrix(matrix,neighbor.position)) and \
+                    (neighbor.position.x,neighbor.position.y) not in matrix.polyDrawedPositions:
+                        print("-- ({},{})".format(neighbor.position.x,neighbor.position.y))
+                        stack.append(neighbor)
                         colors = ['royalblue','royalblue1','royalblue2','royalblue3','royalblue4']
-                        drawPoint(vertex.position.x,vertex.position.y,colors[random.randint(0, 5)-1])
-    print("--------------------no no no no no no path not found-------------------------")                
+                        drawPoint(neighbor.position.x,neighbor.position.y,colors[random.randint(0, 5)-1])
+    print("--------------------no no no no no no path not found-------------------------")
     return []
 
 def main():
@@ -263,5 +248,4 @@ def main():
     win.close()
 main()
             
-
 

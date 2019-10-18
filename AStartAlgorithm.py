@@ -1,6 +1,7 @@
 import queue
 from graphics import *
 import math
+import random
 
 winWidth = 700
 winHeight = 700
@@ -13,9 +14,9 @@ def drawFirstWin(matrix):
     rectangle.setFill("white")
     rectangle.draw(win)
     for i in range(0, matrix.w):
+        Line(Point(i, 0), Point(i, matrix.h)).draw(win)
+    for i in range(0, matrix.h):
         Line(Point(0, i), Point(matrix.w, i)).draw(win)
-    for x in range(0, matrix.h):
-        Line(Point(x, 0), Point(x, matrix.h)).draw(win)
 
 def drawPoint( x, y, color):
     square = Rectangle(Point(int(x),y), Point(int(x)+1,int(y)+1))
@@ -194,7 +195,8 @@ def aStar(matrix, start, end):
                 (node.position.x,node.position.y) not in matrix.polyDrawedPositions:
                     print("-- ({},{})".format(node.position.x,node.position.y))
                     openNodes.append(node)
-                    drawPoint(node.position.x,node.position.y,'royalblue')
+                    colors = ['royalblue','royalblue1','royalblue2','royalblue3','royalblue4']
+                    drawPoint(node.position.x,node.position.y,colors[random.randint(0, 5)-1])
     print("--------------------no no no no no no path not found-------------------------")
     return []
 
