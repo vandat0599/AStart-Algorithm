@@ -277,7 +277,7 @@ def main():
     matrix.addAllPolyEdgePositions(positionEdgeDrawed)
 
     for point in pickupPoint:
-        drawPoint(point[0],point[1],'red')
+        drawPoint(point[0],point[1],'magenta2')
     drawPoint(pointStart.x,pointStart.y,'red')
     drawPoint(pointEnd.x,pointEnd.y,'red')
 
