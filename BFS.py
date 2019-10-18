@@ -119,7 +119,7 @@ def bfs(matrix, start, end):
 
 def main():
     matrix = Matrix(22, 22)
-    start = MyPoint(1, 1)
+    start = MyPoint(0, 0)
     end = MyPoint(10, 20)
     drawFirstWin(matrix)
     Bfs = bfs(matrix, start, end)
