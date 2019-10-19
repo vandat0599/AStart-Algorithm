@@ -211,15 +211,33 @@ def aStar(matrix, start, end):
     print("--------------------no no no no no no path not found-------------------------")
     return []
 
+def getMinManhattan(point,pointArr):
+    m = MyPoint(pointArr[0][0],pointArr[0][1])
+    for p in pointArr:
+        current = MyPoint(p[0],p[1])
+        if current.manhattanDistance(point) < m.manhattanDistance(point):
+            m = current
+    print(pointArr)
+    print("current: ({},{})   min: ({},{})".format(point.x,point.y,m.x,m.y))
+    for p in pointArr:
+        print("distance: ({},{}) = {}".format(p[0],p[1],point.manhattanDistance(MyPoint(p[0],p[1]))))
+    return m
+
 def pathWithPickupPoint(matrix,start,end,pickupPoint):
     points = []
+    pickupPoint = [(int(x),int(y)) for (x,y) in pickupPoint]
     points.append(start)
-    for pickup in pickupPoint:
-        points.append(MyPoint(pickup[0],pickup[1]))
+    current = start
+    while pickupPoint:
+        minPoint = getMinManhattan(current,pickupPoint)
+        points.append(minPoint)
+        current = minPoint
+        pickupPoint.remove((current.x,current.y))
     points.append(end)
     result = []
     for index in range(0,len(points)-1):
         result += aStar(matrix,points[index],points[index+1])
+
     print("-----Result Path: {}".format([(node.position.x,node.position.y) for node in result]))
     print("-----Cost: {}".format(getCostPath(result)))
     return result
